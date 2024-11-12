@@ -135,7 +135,7 @@ exports.deleteUser = async (req, res) => {
             return res.status(404).json({ msg: 'Usuario no encontrado' });
         }
 
-        await User.findByIdAndRemove(req.params.id);
+        await User.findByIdAndDelete(req.params.id);
 
         res.json({ msg: 'Usuario eliminado' });
     } catch (error) {

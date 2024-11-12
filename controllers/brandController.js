@@ -89,7 +89,7 @@ exports.deleteBrand = async (req, res) => {
         if (!brand)
             return res.status(404).json({ msg: 'Marca no encontrada' });
 
-        await Brand.findByIdAndRemove(req.params.id);
+        await Brand.findByIdAndDelete(req.params.id);
 
         res.json({ msg: 'Marca eliminada' });
     } catch (error) {
