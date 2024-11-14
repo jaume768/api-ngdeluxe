@@ -20,9 +20,31 @@ exports.createProduct = async (req, res) => {
         res.status(201).json(product);
     } catch (error) {
         console.error(error.message);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ msg: error.message });
+        }
         res.status(500).send('Error en el servidor');
     }
 };
+
+exports.getProductsByBrand = async (req, res) => {
+    const { brandId } = req.params;
+
+    try {
+        const brand = await Brand.findById(brandId);
+        if (!brand) {
+            return res.status(404).json({ msg: 'Marca no encontrada' });
+        }
+
+        const products = await Product.find({ marca: brandId }).populate('marca', 'nombre');
+
+        res.json(products);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Error en el servidor');
+    }
+};
+
 
 exports.getAllProducts = async (req, res) => {
     try {

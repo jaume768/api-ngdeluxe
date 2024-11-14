@@ -9,6 +9,8 @@ router.post('/', verificaToken, verificaAdmin, productController.createProduct);
 // Obtener todos los productos
 router.get('/', productController.getAllProducts);
 
+router.get('/brand/:brandId', productController.getProductsByBrand);
+
 // Obtener un producto por ID
 router.get('/:id', productController.getProductById);
 
