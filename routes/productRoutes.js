@@ -14,6 +14,8 @@ router.get('/brand/:brandId', productController.getProductsByBrand);
 // Obtener un producto por ID
 router.get('/:id', productController.getProductById);
 
+router.get('/brand/:brandId/random/:excludeId', productController.getRandomProductsByBrand);
+
 // Actualizar un producto
 router.put('/:id', verificaToken, verificaAdmin, productController.updateProduct);
 

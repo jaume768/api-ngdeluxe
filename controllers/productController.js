@@ -45,6 +45,27 @@ exports.getProductsByBrand = async (req, res) => {
     }
 };
 
+exports.getRandomProductsByBrand = async (req, res) => {
+    const { brandId, excludeId } = req.params;
+
+    try {
+        const brand = await Brand.findById(brandId);
+        if (!brand) {
+            return res.status(404).json({ msg: 'Marca no encontrada' });
+        }
+
+        const products = await Product.find({ marca: brandId, _id: { $ne: excludeId } });
+        
+        const shuffled = products.sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 4);
+
+        res.json(selected);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Error en el servidor');
+    }
+};
+
 
 exports.getAllProducts = async (req, res) => {
     try {
