@@ -26,7 +26,7 @@ exports.createBrand = async (req, res) => {
 
 exports.getAllBrands = async (req, res) => {
     try {
-        const brands = await Brand.find().populate('categoria', 'nombre');
+        const brands = await Brand.find().populate('categoria', 'nombre fotoUrl');
         res.json(brands);
     } catch (error) {
         console.error(error.message);
@@ -36,7 +36,7 @@ exports.getAllBrands = async (req, res) => {
 
 exports.getBrandById = async (req, res) => {
     try {
-        const brand = await Brand.findById(req.params.id).populate('categoria', 'nombre');
+        const brand = await Brand.findById(req.params.id).populate('categoria', 'nombre fotoUrl');
         if (!brand)
             return res.status(404).json({ msg: 'Marca no encontrada' });
         res.json(brand);
