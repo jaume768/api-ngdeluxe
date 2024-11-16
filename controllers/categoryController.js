@@ -1,16 +1,23 @@
 const Category = require('../models/Category');
 
 exports.createCategory = async (req, res) => {
-    const { nombre, fotoUrl } = req.body;
+    const { nombre, fotoUrl, order } = req.body;
 
     try {
-        const category = new Category({
+        let categoryOrder = order;
+        if (order === undefined || order === null) {
+            const lastCategory = await Category.findOne().sort('-order');
+            categoryOrder = lastCategory ? lastCategory.order + 1 : 0;
+        }
+
+        const newCategory = new Category({
             nombre,
             fotoUrl,
+            order: categoryOrder,
         });
 
-        await category.save();
-        res.status(201).json(category);
+        await newCategory.save();
+        res.status(201).json(newCategory);
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Error en el servidor');
@@ -19,7 +26,7 @@ exports.createCategory = async (req, res) => {
 
 exports.getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.find();
+        const categories = await Category.find().sort('order');
         res.json(categories);
     } catch (error) {
         console.error(error.message);
@@ -42,11 +49,12 @@ exports.getCategoryById = async (req, res) => {
 };
 
 exports.updateCategory = async (req, res) => {
-    const { nombre, fotoUrl } = req.body;
+    const { nombre, fotoUrl, order } = req.body;
 
     const categoryFields = {};
     if (nombre) categoryFields.nombre = nombre;
     if (fotoUrl) categoryFields.fotoUrl = fotoUrl;
+    if (order !== undefined && order !== null) categoryFields.order = order;
 
     try {
         let category = await Category.findById(req.params.id);
@@ -75,7 +83,6 @@ exports.deleteCategory = async (req, res) => {
             return res.status(404).json({ msg: 'Categoría no encontrada' });
 
         await Category.findByIdAndDelete(req.params.id);
-
         res.json({ msg: 'Categoría eliminada' });
     } catch (error) {
         console.error(error.message);
