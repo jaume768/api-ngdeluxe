@@ -2,7 +2,7 @@ const Product = require('../models/Product');
 const Brand = require('../models/Brand');
 
 exports.createProduct = async (req, res) => {
-    const { nombre, imagenes, marca } = req.body;
+    const { nombre, imagenes, marca, descripcion } = req.body;
 
     try {
         const brand = await Brand.findById(marca);
@@ -12,6 +12,7 @@ exports.createProduct = async (req, res) => {
 
         const product = new Product({
             nombre,
+            descripcion,
             imagenes,
             marca,
         });
@@ -105,10 +106,11 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.updateProduct = async (req, res) => {
-    const { nombre, imagenes, marca } = req.body;
+    const { nombre, imagenes, marca, descripcion } = req.body;
 
     const productFields = {};
     if (nombre) productFields.nombre = nombre;
+    if (descripcion) productFields.descripcion = descripcion;
     if (imagenes) productFields.imagenes = imagenes;
     if (marca) productFields.marca = marca;
 
