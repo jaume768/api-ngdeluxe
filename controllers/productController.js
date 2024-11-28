@@ -29,7 +29,11 @@ exports.createProduct = async (req, res) => {
 
 exports.getProductsByBrand = async (req, res) => {
     const { brandId } = req.params;
-    const { page = 1, limit = 10 } = req.query;
+    let { page = 1, limit = 10 } = req.query;
+    
+    // Convertir a enteros
+    page = parseInt(page);
+    limit = parseInt(limit);
 
     try {
         const brand = await Brand.findById(brandId);
@@ -41,14 +45,14 @@ exports.getProductsByBrand = async (req, res) => {
             .populate('marca', 'nombre')
             .sort({ _id: -1 })
             .skip((page - 1) * limit)
-            .limit(parseInt(limit));
+            .limit(limit);
 
         const total = await Product.countDocuments({ marca: brandId });
 
         res.json({
             total,
-            page: parseInt(page),
-            limit: parseInt(limit),
+            page,
+            limit,
             totalPages: Math.ceil(total / limit),
             products,
         });
